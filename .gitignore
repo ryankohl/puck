@@ -7,3 +7,6 @@ pom.xml
 .Rhistory
 .RData
 *-Ex.R
+*.*~
+*.log
+.lein-failures
