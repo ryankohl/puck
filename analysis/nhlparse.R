@@ -1,31 +1,33 @@
-source("rdfparse.R")
-rdf <- "http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-rdfs <- "http://www.w3.org/2000/01/rdf-schema#"
-nhl <- "http://www.nhl.com/"
+library("rrdf")
 
-awayteamid   <- function(gid, x) { fact( gid, rdf.node(nhl,"awayteamid"), rdf.str(x) ) }
-awayteamname <- function(gid, x) { fact( gid, rdf.node(nhl,"awayteamname"), rdf.str(x) ) }
-awayteamnick <- function(gid, x) { fact( gid, rdf.node(nhl,"awayteamnick"), rdf.str(x) ) }
-hometeamid   <- function(gid, x) { fact( gid, rdf.node(nhl,"hometeamid"), rdf.str(x) ) }
-hometeamname <- function(gid, x) { fact( gid, rdf.node(nhl,"hometeamname"), rdf.str(x) ) }
-hometeamnick <- function(gid, x) { fact( gid, rdf.node(nhl,"hometeamnick"), rdf.str(x) ) }
+conc <- function(...) {  paste( list(...), collapse="" ) }
+ns.rdf <- function(x) { conc("http://www.w3.org/1999/02/22-rdf-syntax-ns#",x) }
+ns.rdfs <- function(x) { conc("http://www.w3.org/2000/01/rdf-schema#",x) }
+ns.nhl <- function(x) { conc("http://www.nhl.com/",x) }
 
-game.field <- function(gid, field, x) {
-  switch(field,
-         "awayteamid" = awayteamid(gid, x[[field]]),
-         "awayteamname" = awayteamname(gid, x[[field]]),
-         "awayteamnick" = awayteamnick(gid, x[[field]]),
-         "hometeamid" = hometeamid(gid, x[[field]]),
-         "hometeamname" = hometeamname(gid, x[[field]]),
-         "hometeamnick" = hometeamnick(gid, x[[field]])
-)}
+awayteamid   <- function(gid, x, kb) { lit.fact(kb, gid, ns.nhl("awayteamid"), x, "string") }
+awayteamname <- function(gid, x, kb) { lit.fact(kb, gid, ns.nhl("awayteamname"), x, "string") }
+awayteamnick <- function(gid, x, kb) { lit.fact(kb, gid, ns.nhl("awayteamnick"), x, "string") }
+hometeamid   <- function(gid, x, kb) { lit.fact(kb, gid, ns.nhl("hometeamid"), x, "string") }
+hometeamname <- function(gid, x, kb) { lit.fact(kb, gid, ns.nhl("hometeamname"), x, "string") }
+hometeamnick <- function(gid, x, kb) { lit.fact(kb, gid, ns.nhl("hometeamnick"), x, "string") }
+
+res.fact <- function(kb,s,p,o) { add.triple(kb, subject=s, predicate=p, object=o) }
+lit.fact <- function(kb,s,p,o,t) { add.data.triple(kb, subject=s, predicate=p, data=as.character(o), type=t) }
+
+parsed.fields <- c("awayteamid","awayteamname","awayteamnick",
+                   "hometeamid","hometeamname","hometeamnick")
+
+game.field <- function(gid, field, x, kb) {
+  if (field %in% parsed.fields) { get(field)(gid, x[[field]], kb) }
+}
 
 game <- function(x) {
-  facts <- c()
+  kb <- new.rdf(ontology=FALSE)
   gid <- rdf.blank("game")
-  facts <- append(facts, fact(gid, rdf.node(rdf,"type"), rdf.node(nhl,"Game")))
+  res.fact(kb, gid, ns.rdf("type"), ns.nhl("Game"))
   game.data <- x[["data"]][["game"]]
   fields <- names(game.data)
-  facts <- append(facts, sapply(fields, function(f) { game.field(gid, f, game.data) }))
-  paste(facts, collapse=" . \n ")
+  for (f in fields) { game.field(gid, f, game.data, kb) }
+  kb
 }

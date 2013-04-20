@@ -1,6 +1,7 @@
 source("nhlparse.R")
 library(RJSONIO)
 library(rmr2)
+library(rrdf)
 rmr.options(backend= "local")
 
 get.datum <- function(n, dir, year) {
@@ -18,11 +19,16 @@ get.data <- function() {
   c.keyval(the.keyvals)
 }
 
+the.fun <- function(k,v) {
+  g <- game(v)
+  summarize.rdf(g)
+  sparql.rdf(g, "select * { ?s ?p ?o }")
+}
 
 hdfs.data= to.dfs(get.data())
 result <- mapreduce(
                     input= hdfs.data,
-                    map= function(k,v) { game(v) })
+                    map= the.fun )
 ans <- from.dfs(result)
 
-ans$val[2]
+x <- ans$val[2]

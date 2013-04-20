@@ -15,7 +15,7 @@ into the analytic process.
 In the R environment, the following packages will need to be installed:
 
 ```R
-install.packages(pkgs=c("rmr2","rrdflibs","rrdf"))
+install.packages(pkgs=c("rJava","rmr2","rrdflibs","rrdf","RJSONIO"))
 ```
 
 The rmr2 package is a bit tricky to install - you'll want to 
