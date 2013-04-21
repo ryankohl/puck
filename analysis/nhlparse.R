@@ -5,6 +5,13 @@ ns.rdf <- function(x) { conc("http://www.w3.org/1999/02/22-rdf-syntax-ns#",x) }
 ns.rdfs <- function(x) { conc("http://www.w3.org/2000/01/rdf-schema#",x) }
 ns.nhl <- function(x) { conc("http://www.nhl.com/",x) }
 
+get.query <- function(query) {
+  one <- "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+  two <- "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> "
+  three <- "prefix : <http://www.nhl.com/> "
+  conc(one,two,three,query)
+}
+
 awayteamid   <- function(gid, x, kb) { lit.fact(kb, gid, ns.nhl("awayteamid"), x, "string") }
 awayteamname <- function(gid, x, kb) { lit.fact(kb, gid, ns.nhl("awayteamname"), x, "string") }
 awayteamnick <- function(gid, x, kb) { lit.fact(kb, gid, ns.nhl("awayteamnick"), x, "string") }

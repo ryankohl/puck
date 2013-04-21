@@ -21,8 +21,8 @@ get.data <- function() {
 
 the.fun <- function(k,v) {
   g <- game(v)
-  summarize.rdf(g)
-  sparql.rdf(g, "select * { ?s ?p ?o }")
+  q <- get.query("select ?home ?away { ?game :hometeamname ?home . ?game :awayteamname ?away }")
+  sparql.rdf(g, q)
 }
 
 hdfs.data= to.dfs(get.data())
