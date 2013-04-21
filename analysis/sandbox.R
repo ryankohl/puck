@@ -19,19 +19,17 @@ get.data <- function() {
   c.keyval(the.keyvals)
 }
 
-matchups <- function(k,v) { 
-  q <- get.query("select ?home ?away { ?game :hometeamname ?home . ?game :awayteamname ?away }")
-  sparql.rdf(game(v), q)
+query.for <- function(q) {
+  query <- get.query(q)
+  function(k,v) { sparql.rdf(game(v), query) }
 }
 
-actions <- function(k,v) {
-  q <- get.query("select ?game ?play ?type { ?game :play ?play . ?play a ?type }")
-  sparql.rdf(game(v), q)
-}
+matchups <- "select ?home ?away { ?game :hometeamname ?home . ?game :awayteamname ?away }"
+actions <- "select ?game ?play ?type { ?game :play ?play . ?play a ?type }"
 
 hdfs.data= to.dfs(get.data())
 result <- mapreduce(
                     input= hdfs.data,
-                    map= actions )
+                    map= query.for(matchups) )
 ans <- from.dfs(result)
 
