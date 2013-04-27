@@ -1,35 +1,23 @@
-source("nhlparse.R")
-library(RJSONIO)
-library(rmr2)
-library(rrdf)
+source("nhl-data.R")
 rmr.options(backend= "local")
 
-get.datum <- function(n, dir, year) {
-  the.file <- conc(dir,"/",year,"/","file-",n,".json")
-  the.value <- fromJSON(the.file)
-  the.key <- conc("game-",n)
-  keyval(the.key, the.value)
-
-}
-get.data <- function() {
-  the.range <- 1:10  
-  the.dir <- "/Users/ryan/data/nhl"
-  the.year <- "2011-2012"
-  the.keyvals <- lapply(the.range, function(n) { get.datum(n, the.dir, the.year) } )  
-  c.keyval(the.keyvals)
-}
+the.range <- 1:10  
+the.year <- "2011-2012"
 
 query.for <- function(q) {
   query <- get.query(q)
-  function(k,v) { sparql.rdf(game(v), query) }
+  function(k,v) {
+    game.rdf <- game(v)
+    sparql.rdf(game.rdf, query)
+  }
 }
 
 matchups <- "select ?home ?away { ?game :hometeamname ?home . ?game :awayteamname ?away }"
 actions <- "select ?game ?play ?type { ?game :play ?play . ?play a ?type }"
 
-hdfs.data= to.dfs(get.data())
+hdfs.data= to.dfs(get.data(the.range, the.year))
 result <- mapreduce(
                     input= hdfs.data,
-                    map= query.for(matchups) )
+                    map= query.for(actions) )
 ans <- from.dfs(result)
 
