@@ -10,3 +10,4 @@ pom.xml
 *.*~
 *.log
 .lein-failures
+*.json
