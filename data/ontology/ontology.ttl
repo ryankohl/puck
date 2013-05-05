@@ -1,0 +1,36 @@
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix nhl:     <http://www.nhl.com/> .
+
+nhl:hometeam     rdfs:domain nhl:Game;
+                 rdfs:range nhl:Team;
+                 rdfs:subPropertyOf nhl:team .
+                                
+nhl:awayteam     rdfs:domain nhl:Game;
+                 rdfs:range nhl:Team;
+                 rdfs:subPropertyOf nhl:team .
+
+nhl:FightingPenalty 	 rdfs:subClassOf nhl:Penalty .
+nhl:Fight		 rdfs:subClassOf nhl:FightingPenalty .
+nhl:FightingMaj		 rdfs:subClassOf nhl:FightingPenalty .
+    
+nhl:ViolentPenalty       rdfs:subClassOf nhl:Penalty .
+
+nhl:Boarding             nhl:penaltyMinutes 2 ; rdfs:subClassOf nhl:ViolentPenalty .
+nhl:Charging             nhl:penaltyMinutes 2 ; rdfs:subClassOf nhl:ViolentPenalty .
+nhl:CrossChecking	 nhl:penaltyMinutes 2 ; rdfs:subClassOf nhl:ViolentPenalty .
+nhl:DelayOfGame          nhl:penaltyMinutes 2 ; rdfs:subClassOf nhl:Penalty .
+nhl:Elbowing             nhl:penaltyMinutes 2 ; rdfs:subClassOf nhl:ViolentPenalty .
+nhl:Fight                nhl:penaltyMinutes 5 ; rdfs:subClassOf nhl:FightingPenalty .
+nhl:FightingMaj          nhl:penaltyMinutes 10 ; rdfs:subClassOf nhl:FightingPenalty .
+nhl:HighSticking         nhl:penaltyMinutes 2 ; rdfs:subClassOf nhl:Penalty .
+nhl:HighSticking-DoubleMinor    nhl:penaltyMinutes 4 ; rdfs:subClassOf nhl:ViolentPenalty .
+nhl:Holding              nhl:penaltyMinutes 2 ; rdfs:subClassOf nhl:Penalty .
+nhl:Hooking              nhl:penaltyMinutes 2 ; rdfs:subClassOf nhl:Penalty .
+nhl:Interference         nhl:penaltyMinutes 2 ; rdfs:subClassOf nhl:Penalty .
+nhl:Misconduct           nhl:penaltyMinutes 10 ; rdfs:subClassOf nhl:ViolentPenalty .
+nhl:Roughing             nhl:penaltyMinutes 2 ; rdfs:subClassOf nhl:ViolentPenalty .
+nhl:Slashing             nhl:penaltyMinutes 2 ; rdfs:subClassOf nhl:ViolentPenalty .
+nhl:Tripping             nhl:penaltyMinutes 2 ; rdfs:subClassOf nhl:Penalty .
+nhl:Unsportsmanlike      nhl:penaltyMinutes 2 ; rdfs:subClassOf nhl:Penalty .
