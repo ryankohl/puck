@@ -19,3 +19,4 @@ get.data <- function(the.range, the.year, the.dir="../data") {
   the.keyvals <- lapply(the.range, function(n) { get.datum(n, the.dir, the.year) } )  
   c.keyval(the.keyvals)
 }
+
