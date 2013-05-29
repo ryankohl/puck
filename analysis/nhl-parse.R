@@ -46,3 +46,8 @@ play.obj <- function(p, prefix="") {
   ns.nhl(conc(prefix, subbed))
 }
 
+get.sample <- function(num, year) {
+  the.file <- conc("../data", "/",year,"/","file-",num,".json")
+  the.json <- fromJSON(the.file)
+  game(the.json)
+}

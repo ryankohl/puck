@@ -59,7 +59,7 @@ reduce.job <- function(player, stats) {
   keyval(player, info)
 }
 run.it <- function() {
-  hdfs.data <- to.dfs(get.data(the.range, the.year, the.dir='/Users/ryan/data/nhl'))
+  hdfs.data <- to.dfs(get.data(the.range, the.year))
   result <- mapreduce(
                       input= hdfs.data,
                       map= map.job,

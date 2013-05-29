@@ -22,3 +22,4 @@ lit.fact <- function(kb,s,p,o,t) {
     add.data.triple(kb, subject=s, predicate=p, data=as.character(o), type=t)
   }
 }
+
