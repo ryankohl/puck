@@ -2,7 +2,7 @@ source("nhl-data.R")
 source("definitions.R")
 rmr.options(backend= "local")
 
-the.range <- 1:1230
+the.range <- 1:10
 the.year <- "2011-2012"
 
 player.info.q <-
@@ -55,7 +55,9 @@ map.job <- function(k,v) {
   keyval(players, stats)
 }
 reduce.job <- function(player, stats) {
-  info <- data.frame(rbind(colSums(stats)))
+  roll.up <- data.frame(rbind(colSums(stats)))
+  p <- 2*roll.up$goals+roll.up$assists
+  info <- data.frame(roll.up, points= p)
   keyval(player, info)
 }
 run.it <- function() {
