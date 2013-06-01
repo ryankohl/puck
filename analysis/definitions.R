@@ -1,3 +1,5 @@
+source("nhl-data.R")
+
 penaltyDef <- function(pen, match) {
   conc("prefix nhl: <http://www.nhl.com/> ",
        "construct { ?e a nhl:", pen, "} ",
@@ -36,3 +38,11 @@ get.enhanced <- function(the.model) {
                         the.ontology,
                         the.model))
 }
+
+get.sample.game <- function(num, year) {
+  the.file <- conc("../data", "/",year,"/","file-",num,".json")
+  the.json <- fromJSON(the.file)
+  get.enhanced(game(the.json))
+}
+
+#sample.game <- get.sample.game(1, the.year)

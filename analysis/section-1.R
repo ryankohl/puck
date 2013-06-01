@@ -1,10 +1,11 @@
-source("nhl-data.R")
 source("definitions.R")
 rmr.options(backend= "local")
 
+# We're interested in the first 10 games of the 2011-2012 season
 the.range <- 1:10
 the.year <- "2011-2012"
 
+# We want the number goals and penalties for each game
 game.info.q <-
   conc("",
        "select ?goals ?pen {",
@@ -14,29 +15,25 @@ game.info.q <-
        "   { ?game :play ?x . ?x a :Penalty } group by ?game } ",
        "}")
 
-enhanced.query.for <- function(q) {
-  the.query <- get.query(q)
-  function(k,v) {
+# Each game is enhanced with an ontology and constructs (per definitions.R)
+# and is queried with the game.info.q
+map.job <- function(k,v) {
     enhanced.game <- get.enhanced(game(v))
-    the.result <- sparql.rdf(enhanced.game, the.query)
+    the.result <- sparql.rdf(enhanced.game, get.query(game.info.q))
     if (length(the.result) > 0) { the.result }
-  }
 }
 
-hdfs.data <- to.dfs(get.data(the.range, the.year))
-
-result <- mapreduce(
-  input= hdfs.data,
-  map= enhanced.query.for(game.info.q))
-
-ans <- data.frame(from.dfs(result)$val)
-
-save(ans, file="GvsP.Rda")
-
-get.sample <- function(num, year) {
-  the.file <- conc("../data", "/",year,"/","file-",num,".json")
-  the.json <- fromJSON(the.file)
-  get.enhanced(game(the.json))
+# We execute the map-reduce function (there's no reduce step here)
+# and transform the resulting numeric matrix to a data.frame
+run.it <- function() {
+  hdfs.data <- to.dfs(get.data(the.range, the.year))
+  result <- mapreduce(
+                      input= hdfs.data,
+                      map= map.job)
+  data.frame(from.dfs(result)$val)
 }
 
-#sample.game <- get.sample(1, the.year)
+# Outside of map-reduce, this is what we're doing with a sample game
+# m <- get.sample.game(1, the.year)
+# e <- get.enhanced(m)
+# r <- sparql.rdf(e, get.query(game.info.q))
