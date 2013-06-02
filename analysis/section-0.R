@@ -1,5 +1,5 @@
 source("nhl-utils.R")
-
+library("RJSONIO")
 the.file <- "../data/2011-2012/file-1.json"
 the.json <- fromJSON(the.file)
 

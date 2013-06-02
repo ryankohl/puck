@@ -1,4 +1,5 @@
 source("nhl-utils.R")
+library(RJSONIO)
 
 # parse a game node, given a parsed JSON object,
 # and return an RDF model with the results

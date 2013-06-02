@@ -1,5 +1,5 @@
 source("nhl-data.R")
-
+library("RJSONIO")
 # let's start off with a knowledge base we filled up with
 # our base parsing functions (in nhl-parse.R)
 the.file <- "../data/2011-2012/file-1.json"
