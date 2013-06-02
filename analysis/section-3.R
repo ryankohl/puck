@@ -91,5 +91,24 @@ run.it <- function() {
                       input= hdfs.data,
                       map= map.job,
                       reduce= reduce.job)
-  data.frame(from.dfs(result))
+  r <- data.frame(from.dfs(result))
+  names(r) <- c("team","goals","assists","penalties","points")
+  r
+}
+
+graph.it <- function(df) {
+  opar <- par(no.readonly=TRUE)
+
+  x <- df[order(df$goals),]
+  x$color[x$goals >= 250] <- "blue"
+  x$color[x$goals >= 220 & x$goals < 250] <- "black"
+  x$color[x$goals < 220] <- "red"
+  dotchart(x$goals,
+           labels=x$team,
+           pch=19,
+           gcolor="black",
+           color= x$color
+           )
+  
+  par(opar)
 }

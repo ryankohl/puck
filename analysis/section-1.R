@@ -30,10 +30,26 @@ run.it <- function() {
   result <- mapreduce(
                       input= hdfs.data,
                       map= map.job)
-  data.frame(from.dfs(result)$val)
+  r <- data.frame(from.dfs(result)$val)
+  names(r) <- c("goals","penalties")
+  r
 }
 
 # Outside of map-reduce, this is what we're doing with a sample game
 # m <- get.sample.game(1, the.year)
 # e <- get.enhanced(m)
 # r <- sparql.rdf(e, get.query(game.info.q))
+
+# Finally, a function to wrap up our visualization of the
+# map-reduce results.  Is there a relationship between
+# goals and penalties?
+graph.it <- function(df) {
+  attach(df)
+  opar <- par(no.readonly=TRUE)
+
+  par(lty=2, pch= 16)
+  plot(goals, penalties)
+  
+  par(opar)
+  detach(df)
+}

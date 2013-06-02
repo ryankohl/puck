@@ -2,7 +2,7 @@ source("definitions.R")
 rmr.options(backend= "local")
 
 # We're interested in the first 10 games of the 2011-2012 season
-the.range <- 1:10
+the.range <- 1:1230
 the.year <- "2011-2012"
 
 # We want to figure out the best team match-ups to watch
@@ -124,12 +124,29 @@ reduce.job <- function(team, stats) {
 # so a 0-0 tie counts as two shutouts), number of fights, the number of goals without
 # an assist (seems to always come up zero, so that may be a query mistake), and hit count.
 run.it <- function() {
-  hdfs.data <- to.dfs(get.data(the.range, the.year))
+  hdfs.data <- to.dfs(get.data(the.range, the.year, the.dir="/Users/ryan/data/nhl"))
   result <- mapreduce(
                       input= hdfs.data,
                       map= map.job,
                       reduce= reduce.job)
   r <- data.frame(from.dfs(result))
   names(r) <- c("matchup","high.scorers","shutouts","fights","solo.goals","hits")
+  scaled <- apply(r[,-c(1)], 2, function(y) (y - mean(y)) / sd(y) ^ as.logical(sd(y)))*50+100
+  s <- data.frame(matchup=r$matchup, scaled)
+  r$my.score <- (s$high.scorers*3)+(s$shutouts*5)+(s$fights*10)+(s$solo.goal*7)+(s$hits*9)
   r
+}
+
+graph.it <- function(df) {
+  odf <- df[order(df$matchup),]
+  attach(odf)
+  opar <- par(no.readonly=TRUE)
+  par(lty=2, pch=16)
+  
+  dotchart(my.score,
+           labels=matchup,
+           pch=19)
+  
+  par(opar)
+  detach(odf)
 }

@@ -104,5 +104,23 @@ run.it <- function() {
                       input= hdfs.data,
                       map= map.job,
                       reduce= reduce.job)
-  data.frame(from.dfs(result))
+  r <- data.frame(from.dfs(result))
+  names(r) <- c("player","goals","assists","penalties","points" )
+  r
+}
+
+# Let's take a look at the relationships between some of our
+# variables all at once in a 2x2 graph box.
+graph.it <- function(df) {
+  attach(df)
+  opar <- par(no.readonly=TRUE)
+
+  par(lty=2, pch= 16, mfrow=c(2,2))
+  plot(goals, assists)
+  plot(goals, penalties)
+  plot(goals, points)
+  plot(assists, penalties)
+  
+  par(opar)
+  detach(df)
 }
