@@ -27,7 +27,7 @@ good.obj <- function(p, prefix="") {
 aid <- play.obj(game.data$awayteamid, prefix="team-")
 hid <- play.obj(game.data$hometeamid, prefix="team-")
 
-# names(game)
+# names(game.data)
 
 # let's declare our basic resources
 res.fact(kb, gid, ns.rdf("type"), ns.nhl("Game"))
@@ -87,6 +87,8 @@ survey.r <- data.frame(survey.r)
 
 # oh god, those namespaces are killing me.  let's clean up the data frame
 survey.r$class <- gsub("http://www.nhl.com/",":",survey.r$class,fixed=TRUE)
+survey.r$class <- gsub("http://www.w3.org/1999/02/22-rdf-syntax-ns#","rdf:",
+                      survey.r$class,fixed=TRUE)
 survey.r$pred <- gsub("http://www.nhl.com/",":",survey.r$pred,fixed=TRUE)
 survey.r$pred <- gsub("http://www.w3.org/1999/02/22-rdf-syntax-ns#","rdf:",
                       survey.r$pred,fixed=TRUE)

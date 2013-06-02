@@ -2,7 +2,7 @@ source("definitions.R")
 rmr.options(backend= "local")
 
 # We're interested in the first 10 games of the 2011-2012 season
-the.range <- 1:1230
+the.range <- 1:10
 the.year <- "2011-2012"
 
 # We want to figure out the best team match-ups to watch
@@ -124,7 +124,7 @@ reduce.job <- function(team, stats) {
 # so a 0-0 tie counts as two shutouts), number of fights, the number of goals without
 # an assist (seems to always come up zero, so that may be a query mistake), and hit count.
 run.it <- function() {
-  hdfs.data <- to.dfs(get.data(the.range, the.year, the.dir="/Users/ryan/data/nhl"))
+  hdfs.data <- to.dfs(get.data(the.range, the.year))
   result <- mapreduce(
                       input= hdfs.data,
                       map= map.job,
