@@ -2,7 +2,7 @@ source("definitions.R")
 rmr.options(backend= "local")
 
 # We're interested in the first 10 games of the 2011-2012 season
-the.range <- 1:1230
+the.range <- 1:10
 the.year <- "2011-2012"
 
 # We want the number of goals, assists, and penalties for each team
@@ -86,7 +86,7 @@ reduce.job <- function(team, stats) {
 # column is a character vector of team nicknames, followed by numeric columns for goals,
 # assists, penalties, and points.
 run.it <- function() {
-  hdfs.data <- to.dfs(get.data(the.range, the.year, the.dir="/Users/ryan/data/nhl"))
+  hdfs.data <- to.dfs(get.data(the.range, the.year))
   result <- mapreduce(
                       input= hdfs.data,
                       map= map.job,
