@@ -1,5 +1,6 @@
 source("definitions.R")
 rmr.options(backend= "local")
+#quartz()
 
 # We're interested in the first 10 games of the 2011-2012 season
 the.range <- 1:10
@@ -29,7 +30,7 @@ matchup.q <-
        " { ?g a :Game . ?x a :Team . ?y a :Team . ",
        "   ?x :nick ?xn . ?y :nick ?yn . ",
        "   filter(?xn < ?yn) . ",
-       "   bind(concat(?xn,'-',?yn) as ?teams) }")
+       "   bind(concat(str(?xn),'-',str(?yn)) as ?teams) }")
 team.goals.q <-
   conc("construct { ?team :numGoals ?goals }  ",
        " { select ?team (count(?x) as ?goals) ",
@@ -133,7 +134,7 @@ run.it <- function() {
   names(r) <- c("matchup","high.scorers","shutouts","fights","solo.goals","hits")
   scaled <- apply(r[,-c(1)], 2, function(y) (y - mean(y)) / sd(y) ^ as.logical(sd(y)))*50+100
   s <- data.frame(matchup=r$matchup, scaled)
-  r$my.score <- (s$high.scorers*3)+(s$shutouts*5)+(s$fights*10)+(s$solo.goal*7)+(s$hits*9)
+  r$my.score <- (s$high.scorers*3)+(s$shutouts*5)+(s$fights*10)+(s$solo.goals*7)+(s$hits*9)
   r
 }
 
@@ -150,3 +151,8 @@ graph.it <- function(df) {
   par(opar)
   detach(odf)
 }
+
+# Run against the full dataset, we get too many match-ups.  Let's just see those that
+# are outliers - say, with scores over 5000
+# x <- run.it()
+# graph.it(x[x$my.score > 5000,])

@@ -1,5 +1,12 @@
-source("nhl-data.R")
 library("RJSONIO")
+source("nhl-parse.R")
+get.query <- function(query) {
+  one <- "prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> "
+  two <- "prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> "
+  three <- "prefix : <http://www.nhl.com/> "
+  conc(one,two,three,query)
+}
+
 # let's start off with a knowledge base we filled up with
 # our base parsing functions (in nhl-parse.R)
 the.file <- "../data/2011-2012/file-1.json"
@@ -45,10 +52,9 @@ survey(ontologized.game)
 holding.q <- conc("prefix nhl: <http://www.nhl.com/> ",
                   "construct { ?e a nhl:Holding } ",
                   " { ?e a nhl:Penalty . ?e nhl:desc ?d . ",
-                  "   filter regex(?d, '.*(HOLDING).*')}")
+                  "   filter contains(str(?d), 'HOLDING')}")
 holding.m <- construct.rdf(ontologized.game, holding.q)
 combined.game <- combine.rdf(ontologized.game, holding.m)
-
 # survey(combined.game)
 
 # Looks good!  But that's a lot of work for every kind of penalty... let's
@@ -60,9 +66,9 @@ combined.game <- combine.rdf(ontologized.game, holding.m)
 penaltyDef <- function(pen, match) {
   conc("prefix nhl: <http://www.nhl.com/> ",
        "construct { ?e a nhl:", pen, "} ",
-       " { ?e a nhl:Penalty . ?e nhl:desc ?d . FILTER regex(?d, '.*(",
+       " { ?e a nhl:Penalty . ?e nhl:desc ?d . FILTER contains(str(?d), '",
        match,
-       ").*')}")
+       "')}")
 }
 
 # So it looks like this:
@@ -89,7 +95,7 @@ penalty.queries <- c(
                      )
 
 # So now we have a list of construct queries.  Let's use some fancy
-# functional programming - lapply to execute each of these constructs
+# functional programming - lapply - to execute each of these constructs
 # against our ontologized.game, and a reduce to combine 'em all together
 # We'll start over with our original 'the.game' - the initial RDF parse product
 penalty.m <- Reduce(combine.rdf, lapply(penalty.queries,

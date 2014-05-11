@@ -1,5 +1,6 @@
 source("definitions.R")
 rmr.options(backend= "local")
+#quartz()
 
 # We're interested in the first 10 games of the 2011-2012 season
 the.range <- 1:10

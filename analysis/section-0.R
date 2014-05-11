@@ -1,15 +1,18 @@
-source("nhl-utils.R")
+source("nhl-parse.R")
 library("RJSONIO")
+#quartz()
+
 the.file <- "../data/2011-2012/file-1.json"
 the.json <- fromJSON(the.file)
+
+# names(the.json)
+# names(the.json$data)
+# names(the.json$data$game)
 
 kb <- new.rdf(ontology=FALSE)
 
 gid <- rdf.blank("game")
 
-# names(the.json)
-# names(the.json$data)
-# names(the.json$data$game)
 
 game.data <- the.json$data$game
 
@@ -24,8 +27,8 @@ good.obj <- function(p, prefix="") {
 }
 
 # home and away teams
-aid <- play.obj(game.data$awayteamid, prefix="team-")
-hid <- play.obj(game.data$hometeamid, prefix="team-")
+aid <- good.obj(game.data$awayteamid, prefix="team-")
+hid <- good.obj(game.data$hometeamid, prefix="team-")
 
 # names(game.data)
 
